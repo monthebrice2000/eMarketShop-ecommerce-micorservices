@@ -1,0 +1,12 @@
+
+version: '3'
+services:
+  configserver:
+    image: emarketshop/cloud-config:0.0.1
+    ports:
+      - 9296:9296
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+
+
+

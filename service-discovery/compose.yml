@@ -1,0 +1,12 @@
+
+version: '3'
+services:
+  service-discovery-container:
+    image: emarketshop/service-discovery:0.0.1
+    ports:
+      - 8761:8761
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+
+

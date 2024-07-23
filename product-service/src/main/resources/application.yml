@@ -1,0 +1,69 @@
+# server:
+#   servlet:
+#     context-path: /favourite-service
+
+spring:
+  # zipkin:
+  #   base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
+  # cloud:
+  #     config:
+  #       uri: http://localhost:9296
+  # bootstrap:
+  #   enabled: true
+  application:
+    name: product-service
+  profiles:
+    active: dev
+  config:
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
+    # discovery:
+    #   enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      productService:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        automatic-transition-from-open-to-half-open-enabled: true
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        wait-duration-in-open-state: 5s
+        sliding-window-type: COUNT_BASED
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+  bulkhead:
+    instances:
+      bulkheadProductService:
+        maxWaitDuration: 10ms
+        maxConcurrentCalls: 20
+  thread-pool-bulkhead:
+    instances:
+      bulkheadProductService:
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 1
+        keepAliveDuration: 20ms
+  retry:
+    instances:
+      retryProductService:
+        maxRetryAttempts: 5
+        waitDuration: 10000
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    instances:
+      retryProductService:
+        timeoutDuration: 1000ms
+        limitRefreshPeriod: 5000
+        limitForPeriod: 5
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
