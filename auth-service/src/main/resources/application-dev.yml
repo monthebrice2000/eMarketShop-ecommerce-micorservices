@@ -1,0 +1,53 @@
+
+server:
+  port: 8900
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+
+
+spring:
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+# eureka:
+#   instance:
+#     hostname: localhost
+#     port: 8761
+#     preferIpAddress: true
+#   client:
+#     registerWithEureka: true
+#     fetchRegistry: true
+#     serviceUrl:
+#       defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+
+# security:
+#   oauth2:
+#     client:
+#       client-id: emarketshop
+#       client-secret: QDFSDFkjbobouvBUVILUV:LUVY
+
+signing:
+  key: "345345fsdfsf5345"
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      springframework:
+        web: DEBUG
+        data: DEBUG
+      boot:
+        autoconfigure:
+          data:
+            rest: DEBUG
+            jpa: DEBUG
+            orm: DEBUG
+

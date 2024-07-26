@@ -8,12 +8,12 @@ public class UserContext {
     public static final String CORRELATION_ID = "tmx-correlation-id";
     public static final String AUTH_TOKEN = "Authorization";
     public static final String USER_ID = "tmx-user-id";
-    public static final String ORGANIZATION_ID = "tmx-organization-id";
+    public static final String PRODUCT_ID = "tmx-organization-id";
 
     private static final ThreadLocal<String> correlationId = new ThreadLocal<String>();
     private static final ThreadLocal<String> authToken = new ThreadLocal<String>();
     private static final ThreadLocal<String> userId = new ThreadLocal<String>();
-    private static final ThreadLocal<String> organizationId = new ThreadLocal<String>();
+    private static final ThreadLocal<String> productId = new ThreadLocal<String>();
 
     public static String getCorrelationId() {
         return correlationId.get();
@@ -40,11 +40,11 @@ public class UserContext {
     }
 
     public static String getOrganizationId() {
-        return organizationId.get();
+        return productId.get();
     }
 
     public static void setOrganizationId(String organization) {
-        organizationId.set(organization);
+        productId.set(organization);
     }
 
     public static HttpHeaders getHttpHeaders() {

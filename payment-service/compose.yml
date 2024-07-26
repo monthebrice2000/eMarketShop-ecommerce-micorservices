@@ -2,7 +2,7 @@
 version: '3'
 services:
   payment-service-container:
-    image: emarketshop/payment-service-ecommerce-boot:0.1.0
+    image: emarketshop/payment-service:0.0.1
     ports:
       - 8400:8400
     environment:

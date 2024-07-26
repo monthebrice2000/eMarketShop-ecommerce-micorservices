@@ -1,6 +1,10 @@
 # server:
 #   servlet:
-#     context-path: /favourite-service
+#     context-path: /shipping-service
+
+springdoc:
+  swagger-ui:
+    path: /shipping-service/swagger-ui.html
 
 spring:
   # zipkin:
@@ -18,6 +22,8 @@ spring:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
     # discovery:
     #   enabled: true
+  main: 
+    allow-bean-definition-overriding: true
 
 # resilience4j:
 #   circuitbreaker:

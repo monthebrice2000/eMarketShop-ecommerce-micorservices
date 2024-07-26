@@ -1,6 +1,10 @@
 # server:
 #   servlet:
-#     context-path: /favourite-service
+#     context-path: /user-service
+
+springdoc:
+  swagger-ui:
+    path: /user-service/swagger-ui.html
 
 spring:
   # zipkin:

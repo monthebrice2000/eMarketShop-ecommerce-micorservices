@@ -1,0 +1,26 @@
+
+version: '3'
+services:
+  # auth-service-container:
+  #   image: emarketshop/auth-service:0.0.1
+  #   ports:
+  #     - 8900:8900
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=dev
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+
+

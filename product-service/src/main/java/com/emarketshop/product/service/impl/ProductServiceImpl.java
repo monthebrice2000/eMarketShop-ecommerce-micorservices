@@ -15,15 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import com.emarketshop.product.constant.ActionEnum;
 import com.emarketshop.product.dto.ProductDto;
+// import com.emarketshop.product.events.source.SimpleSourceBean;
 import com.emarketshop.product.exception.wrapper.ProductNotFoundException;
 import com.emarketshop.product.helper.ProductMappingHelper;
 import com.emarketshop.product.repository.ProductRepository;
 import com.emarketshop.product.service.ProductService;
 import com.emarketshop.product.utils.UserContextHolder;
 
-import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,16 +39,20 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	MessageSource messages;
 
+	// @Autowired
+	// SimpleSourceBean simpleSourceBean;
+
 	private final ProductRepository productRepository;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
 	@CircuitBreaker(name = "productService", fallbackMethod = "buildFallbackProductList")
-	@Bulkhead(name= "bulkheadProductService", type = Bulkhead.Type.THREADPOOL, fallbackMethod= "buildFallbackProductList")
+	@Bulkhead(name = "bulkheadProductService", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackProductList")
 	@Retry(name = "retryProductService", fallbackMethod = "buildFallbackProductList")
 	public List<ProductDto> findAll() throws TimeoutException {
-		log.info("*** ProductDto List, service; fetch all products *", UserContextHolder.getContext().getCorrelationId());
+		log.info("*** ProductDto List, service; fetch all products *",
+				UserContextHolder.getContext().getCorrelationId());
 		randomlyRunLong();
 		return this.productRepository.findAll()
 				.stream()
@@ -58,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 	private List<ProductDto> buildFallbackProductList(Throwable t) {
 		List<ProductDto> fallbackList = new ArrayList<>();
 		ProductDto productDto = new ProductDto();
-		productDto.setProductId(0000000-00-00000);
+		productDto.setProductId(0000000 - 00 - 00000);
 		// license.setOrganizationId(organizationId);
 		productDto.setProductTitle("Sorry no licensing information currently available");
 		fallbackList.add(productDto);
@@ -77,8 +83,14 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public ProductDto save(final ProductDto productDto) {
 		log.info("*** ProductDto, service; save product *");
-		return ProductMappingHelper.map(this.productRepository
+
+		ProductDto productDtoSaved = ProductMappingHelper.map(this.productRepository
 				.save(ProductMappingHelper.map(productDto)));
+
+		// simpleSourceBean.publishProductChange(
+		// 		ActionEnum.CREATED,
+		// 		String.format("%d", productDtoSaved.getProductId()) );
+		return productDtoSaved;
 	}
 
 	@Override

@@ -2,14 +2,18 @@
 #   servlet:
 #     context-path: /favourite-service
 
+springdoc:
+  swagger-ui:
+    path: /payment-service/swagger-ui.html
+
 spring:
   # zipkin:
   #   base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
   # cloud:
   #     config:
   #       uri: http://localhost:9296
-    # bootstrap:
-    #   enabled: true
+  # bootstrap:
+  #   enabled: true
   application:
     name: payment-service
   profiles:
