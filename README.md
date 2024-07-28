@@ -11,6 +11,8 @@ eMarketShop est une plateforme d'e-commerce innovante et scalable construite ave
 - **Gestion des commandes** : Microservice pour la création et le suivi des commandes.
 - **Gestion des utilisateurs** : Microservice pour l'inscription, la connexion et la gestion des profils utilisateurs.
 - **API Gateway** : Microservice pour la gestion des routages et des accès aux autres microservices.
+- **Service Discovery** : Microservice pour la gestion des services entrants et sortants
+- **Conig Service** : Microservice pour la gestion des configurations des autres services
 
 ## Architecture
 ### Microservices
