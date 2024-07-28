@@ -1,0 +1,58 @@
+
+server:
+  port: 8700
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:ecommerce_dev_db;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: '{cipher}426e4d01ff4c79765add43e84c9e50a87bfffedb46379e7a34e2249f11a8ee79'
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop # validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        use_sql_comments: true
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  #flyway:
+  #  baseline-on-migrate: true
+  #  enabled: true
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+    port: 8761
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      springframework:
+        web: DEBUG
+        data: DEBUG
+      boot:
+        autoconfigure:
+          data:
+            rest: DEBUG
+            jpa: DEBUG
+            orm: DEBUG
+

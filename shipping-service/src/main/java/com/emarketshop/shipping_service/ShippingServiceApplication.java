@@ -23,7 +23,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 // import com.emarketshop.shipping_service.config.ServiceConfig;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+// @EnableDiscoveryClient
 @RefreshScope
 // @EnableBinding(Sink.class)
 public class ShippingServiceApplication {

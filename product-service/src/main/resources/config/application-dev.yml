@@ -1,0 +1,98 @@
+logstash:
+  host: ${LOGSTASH_URI:localhost:5000}
+  config: classpath:logback.xml
+
+server:
+  port: 8500
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+  # tracing:
+  #   sampling:
+  #     probability: 1.0
+  # zipkin:
+  #   tracing:
+  #     endpoint: http://localhost:9411
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:ecommerce_dev_db;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop # validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        use_sql_comments: true
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      # settings: 
+      #   web-allow-others: true
+
+  #flyway:
+  #  baseline-on-migrate: true
+  #  enabled: true
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+    port: 8761
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+# keycloak
+#   realm: emarketshop-realm
+#   auth-server-url: http://localhost:8080/realms/emarketshop-realm/protocol/openid-connect/token
+#   ssl-required: external
+#   resource: emarketshop-client
+#   credentials:
+#     secret: Qt9VJ6nJ8iMaJ286Ii0iFWJCAVFwIIbR
+#   use-resource-role-mappings: true
+#   bearer-only: true
+
+# spring:
+#   cloud:
+#     stream:
+#       bindings:
+#         output:
+#           destination: productChangeTopic
+#           content-type: application/json
+#     kafka:
+#       binder:
+#         zkNodes: kafka
+#         brokers: kafka
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      springframework:
+        web: 
+          - DEBUG
+          - WARN
+        data: DEBUG
+      boot:
+        autoconfigure:
+          data:
+            rest: DEBUG
+            jpa: DEBUG
+            orm: DEBUG
+    com:
+      emarketshop: DEBUG
+

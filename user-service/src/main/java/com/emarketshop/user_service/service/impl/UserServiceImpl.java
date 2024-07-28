@@ -16,6 +16,9 @@ import com.emarketshop.user_service.helper.UserMappingHelper;
 import com.emarketshop.user_service.repository.UserRepository;
 import com.emarketshop.user_service.service.UserService;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +34,9 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 
 	@Override
+	@CircuitBreaker(name = "userService")
+	@Bulkhead(name = "bulkheadUserService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "retryUserService")
 	public List<UserDto> findAll() {
 		log.info("*** UserDto List, service; fetch all users *");
 		return this.userRepository.findAll()

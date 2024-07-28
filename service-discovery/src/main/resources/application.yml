@@ -1,7 +1,12 @@
 
+
+# server:
+#   servlet:
+#     context-path: /service-discovery
+
 spring:
-  # zipkin:
-  #   base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
+  zipkin:
+    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
   application:
     name: service-discovery
   profiles:
@@ -9,6 +14,7 @@ spring:
     - dev
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
+    location: ${SPRING_CONFIG_LOCATION:optional:classpath:/config}
   cloud:
     # config:
     #   uri: ${SPRING_CLOUD_CONFIG_URI:optional:http://localhost:9296}
@@ -19,7 +25,7 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      serviceDiscovery:
+      productService:
         register-health-indicator: true
         event-consumer-buffer-size: 10
         automatic-transition-from-open-to-half-open-enabled: true
@@ -29,6 +35,33 @@ resilience4j:
         sliding-window-size: 10
         wait-duration-in-open-state: 5s
         sliding-window-type: COUNT_BASED
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+  bulkhead:
+    instances:
+      bulkheadProductService:
+        maxWaitDuration: 10ms
+        maxConcurrentCalls: 20
+  thread-pool-bulkhead:
+    instances:
+      bulkheadProductService:
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 1
+        keepAliveDuration: 20ms
+  retry:
+    instances:
+      retryProductService:
+        maxRetryAttempts: 5
+        waitDuration: 10000
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    instances:
+      productService:
+        timeoutDuration: 1000ms
+        limitRefreshPeriod: 5000
+        limitForPeriod: 5
 
 management:
   health:

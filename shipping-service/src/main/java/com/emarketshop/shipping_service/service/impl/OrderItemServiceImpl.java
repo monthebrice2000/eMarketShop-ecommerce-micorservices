@@ -21,6 +21,9 @@ import com.emarketshop.shipping_service.helper.OrderItemMappingHelper;
 import com.emarketshop.shipping_service.repository.OrderItemRepository;
 import com.emarketshop.shipping_service.service.OrderItemService;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +40,9 @@ public class OrderItemServiceImpl implements OrderItemService {
 	private final RestTemplate restTemplate;
 
 	@Override
+	@CircuitBreaker(name = "shippingService")
+	@Bulkhead(name = "bulkheadShippingService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "retryShippingService")
 	public List<OrderItemDto> findAll() {
 		log.info("*** OrderItemDto List, service; fetch all orderItems *");
 		return this.orderItemRepository.findAll().stream().map(OrderItemMappingHelper::map).map(o -> {

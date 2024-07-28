@@ -1,13 +1,14 @@
 
 version: '3'
 services:
-  favourite-service-container:
+  favouriteservice:
     image: emarketshop/favourite-service:0.0.1
     ports:
       - 8800:8800
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_CLOUD_CONFIG_URI=http://configserver:9296
+      - SPRING_CONFIG_IMPORT=http://configserver:9296
+      - PROJECT_VERSION=0.0.1
 
 
 

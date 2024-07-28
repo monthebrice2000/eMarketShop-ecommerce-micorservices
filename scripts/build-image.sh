@@ -6,8 +6,20 @@ PROJECT_DIR=`dirname $(pwd)`
 
 # Define the service name and version
 REPO_CONTAINER_IMAGE="emarketshop"
-SERVICES=("user-service" "shipping-service" "product-service" "payment-service" "order-service" "favourite-service")
+SERVICES=("user-service" "shipping-service" "product-service" "payment-service" "order-service" "favourite-service" "cloud-config" "service-discovery" "api-gateway")
 VERSION="0.0.1"
+
+if [ $# -ge 2 ]; then
+    case "$1" in
+        "--image-name") 
+            SERVICES=("$2");;
+        *)
+            echo "Invalid argument: $1"
+            echo "Usage: $0 --image-name <service-name>"
+            exit 1
+            ;;
+    esac    
+fi
 
 for SERVICE in "${SERVICES[@]}"
 do

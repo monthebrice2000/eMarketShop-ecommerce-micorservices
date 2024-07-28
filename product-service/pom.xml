@@ -20,7 +20,6 @@
 		<java.version>17</java.version>
 		<docker.image.prefix>emarketshop</docker.image.prefix>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
-		<!-- <spring-cloud.version>Hoxton.SR12</spring-cloud.version> -->
 		<testcontainers.version>1.16.0</testcontainers.version>
 		<resilience4jVersion>2.1.0</resilience4jVersion>
 	</properties>
@@ -90,17 +89,12 @@
 			<groupId>io.zipkin.reporter2</groupId>
 			<artifactId>zipkin-reporter-brave</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-sleuth</artifactId>
-			<version>3.1.9</version>
-		</dependency> -->
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
 			<version>6.3</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-circuitbreaker</artifactId>
 			<version>${resilience4jVersion}</version>
@@ -129,7 +123,7 @@
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-timelimiter</artifactId>
 			<version>${resilience4jVersion}</version>
-		</dependency>
+		</dependency> -->
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
@@ -147,6 +141,11 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.0.2</version>
 		 </dependency>
+                 <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 
 
 		<!-- <dependency>

@@ -19,6 +19,9 @@ import com.emarketshop.payment_service.helper.PaymentMappingHelper;
 import com.emarketshop.payment_service.repository.PaymentRepository;
 import com.emarketshop.payment_service.service.PaymentService;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +38,10 @@ public class PaymentServiceImpl implements PaymentService {
 	private final RestTemplate restTemplate;
 
 	@Override
+
+	@CircuitBreaker(name = "paymentService")
+	@Bulkhead(name = "bulkheadPaymentService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "retryPaymentService")
 	public List<PaymentDto> findAll() {
 		log.info("*** PaymentDto List, service; fetch all payments *");
 		return this.paymentRepository.findAll().stream().map(PaymentMappingHelper::map).map(p -> {

@@ -15,7 +15,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @SpringBootApplication
 // @EnableDiscoveryClient
-// @RefreshScope
+@RefreshScope
 // @EnableBinding(Source.class)
 public class ProductServiceApplication {
 

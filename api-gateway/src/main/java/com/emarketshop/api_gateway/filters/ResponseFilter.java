@@ -8,10 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import io.micrometer.tracing.Tracer;
 import reactor.core.publisher.Mono;
 
 @Configuration
 public class ResponseFilter {
+
+    @Autowired
+    Tracer tracer;
 
     final Logger logger = LoggerFactory.getLogger(ResponseFilter.class);
 
@@ -22,7 +26,7 @@ public class ResponseFilter {
     public GlobalFilter postGlobalFilter() {
         return (exchange, chain) -> {
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                // String traceId = tracer.currentSpan().context().traceIdString();
+                // String traceId = tracer.currentSpan().context().traceId();
                 HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
                 String correlationId = filterUtils.getCorrelationId(requestHeaders);
                 logger.debug("Adding the correlation id to the outbound headers. {}", correlationId);

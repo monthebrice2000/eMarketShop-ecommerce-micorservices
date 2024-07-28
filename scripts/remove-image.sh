@@ -4,7 +4,7 @@ set -e
 
 # Define the service name and version
 REPO_CONTAINER_IMAGE="emarketshop"
-SERVICES=("user-service" "shipping-service" "product-service" "payment-service" "order-service" "favourite-service")
+SERVICES=("user-service" "shipping-service" "product-service" "payment-service" "order-service" "favourite-service" "cloud-config" "service-discovery")
 VERSION="0.0.1"
 
 for SERVICE in "${SERVICES[@]}"

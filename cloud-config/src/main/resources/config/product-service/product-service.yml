@@ -1,0 +1,88 @@
+logstash:
+  host: localhost:5000
+  config: classpath:logback-delayed.xml
+
+server:
+  port: 8500
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:ecommerce_dev_db;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: '{cipher}426e4d01ff4c79765add43e84c9e50a87bfffedb46379e7a34e2249f11a8ee79'
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop # validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        use_sql_comments: true
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  #flyway:
+  #  baseline-on-migrate: true
+  #  enabled: true
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+    port: 8761
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+
+# keycloak
+#   realm: emarketshop-realm
+#   auth-server-url: http://localhost:8080/realms/emarketshop-realm/protocol/openid-connect/token
+#   ssl-required: external
+#   resource: emarketshop-client
+#   credentials:
+#     secret: Qt9VJ6nJ8iMaJ286Ii0iFWJCAVFwIIbR
+#   use-resource-role-mappings: true
+#   bearer-only: true
+
+# spring:
+#   cloud:
+#     stream:
+#       bindings:
+#         output:
+#           destination: productChangeTopic
+#           content-type: application/json
+#     kafka:
+#       binder:
+#         zkNodes: kafka
+#         brokers: kafka
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      springframework:
+        web: 
+          - DEBUG
+          - WARN
+        data: DEBUG
+      boot:
+        autoconfigure:
+          data:
+            rest: DEBUG
+            jpa: DEBUG
+            orm: DEBUG
+    com:
+      emarketshop: DEBUG
+

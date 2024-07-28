@@ -20,6 +20,9 @@ import com.emarketshop.favourite_service.helper.FavouriteMappingHelper;
 import com.emarketshop.favourite_service.repository.FavouriteRepository;
 import com.emarketshop.favourite_service.service.FavouriteService;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +38,9 @@ public class FavouriteServiceImpl implements FavouriteService {
 	private final RestTemplate restTemplate;
 
 	@Override
+	@CircuitBreaker(name = "favouriteService")
+	@Bulkhead(name = "bulkheadFavouriteService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "retryFavouriteService")
 	public List<FavouriteDto> findAll() {
 		log.info("*** FavouriteDto List, service; fetch all favourites *");
 		return this.favouriteRepository.findAll()
@@ -55,6 +61,9 @@ public class FavouriteServiceImpl implements FavouriteService {
 	}
 
 	@Override
+	@CircuitBreaker(name = "favouriteService")
+	@Bulkhead(name = "bulkheadFavouriteService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "retryFavouriteService")
 	public FavouriteDto findById(final FavouriteId favouriteId, final Locale locale) {
 		log.info("*** FavouriteDto, service; fetch favourite by id *");
 		return this.favouriteRepository.findById(favouriteId)

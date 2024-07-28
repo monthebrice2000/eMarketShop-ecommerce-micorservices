@@ -1,0 +1,112 @@
+
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+    port: 8761
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+
+spring:
+  cloud:
+    gateway:
+      loadbalancer:
+        ribbon:
+          enabled: false
+      # discovery:
+      #   locator:
+      #     enabled: true
+      #     lowerCaseServiceId: true
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "${CLIENT_HOST:http://localhost:4200}"
+            allowed-headers: "*"
+            exposed-headers: "*"
+            allow-credentials: true
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+      routes:
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
+        - id: ORDER-SERVICE-API
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/apis/orders/**
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/**
+        - id: PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/**
+        - id: PRODUCT-SERVICE-API
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/apis/products/**
+        - id: SHIPPING-SERVICE
+          uri: lb://SHIPPING-SERVICE
+          predicates:
+            - Path=/shipping-service/**
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+        - id: FAVOURITE-SERVICE
+          uri: lb://FAVOURITE-SERVICE
+          predicates:
+            - Path=/favourite-service/**
+        - id: SERVICE-DISCOVERY
+          uri: lb://SERVICE-DISCOVERY
+          predicates:
+            - Path=/service-discovery/**
+        - id: CLOUD-CONFIG
+          uri: lb://CLOUD-CONFIG
+          predicates:
+            - Path=/cloud-config/**
+        - id: PROXY-CLIENT
+          uri: lb://PROXY-CLIENT
+          predicates:
+            - Path=/app/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      springframework:
+        web: DEBUG
+        data: DEBUG
+      boot:
+        autoconfigure:
+          data:
+            rest: DEBUG
+            jpa: DEBUG
+            orm: DEBUG
+

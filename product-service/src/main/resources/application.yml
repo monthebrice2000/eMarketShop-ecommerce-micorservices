@@ -3,12 +3,19 @@
 #     context-path: /product-service
 
 springdoc:
+  api-docs:
+    enabled: true
+    path: '/product-service/v3/api-docs'
   swagger-ui:
-    path: /product-service/swagger-ui.html
+    path: '/product-service/swagger-ui'
+    config-url: '/product-service/v3/api-docs/swagger-config'
+    url: '/product-service/v3/api-docs'
+    doc-expansion: none
+    disable-swagger-default-url: true
 
 spring:
-  # zipkin:
-  #   base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
+  zipkin:
+    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
   # cloud:
   #     config:
   #       uri: http://localhost:9296
@@ -19,7 +26,8 @@ spring:
   profiles:
     active: dev
   config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296/cloud-config}
+    location: ${SPRING_CONFIG_LOCATION:optional:classpath:/config}
     # discovery:
     #   enabled: true
 
@@ -59,7 +67,7 @@ resilience4j:
           - java.util.concurrent.TimeoutException
   ratelimiter:
     instances:
-      retryProductService:
+      productService:
         timeoutDuration: 1000ms
         limitRefreshPeriod: 5000
         limitForPeriod: 5

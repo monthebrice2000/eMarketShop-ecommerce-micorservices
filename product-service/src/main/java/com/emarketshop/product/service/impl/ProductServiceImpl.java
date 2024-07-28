@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@CircuitBreaker(name = "productService", fallbackMethod = "buildFallbackProductList")
 	@Bulkhead(name = "bulkheadProductService", type = Bulkhead.Type.THREADPOOL, fallbackMethod = "buildFallbackProductList")
-	@Retry(name = "retryProductService", fallbackMethod = "buildFallbackProductList")
+	@Retry(name = "productService", fallbackMethod = "buildFallbackProductList")
 	public List<ProductDto> findAll() throws TimeoutException {
 		log.info("*** ProductDto List, service; fetch all products *",
 				UserContextHolder.getContext().getCorrelationId());
@@ -72,6 +72,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@CircuitBreaker(name = "productService")
+	@Bulkhead(name = "bulkheadProductService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "productService")
 	public ProductDto findById(final Integer productId, final Locale locale) {
 		log.info("*** ProductDto, service; fetch product by id *");
 		return this.productRepository.findById(productId)
@@ -81,6 +84,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@CircuitBreaker(name = "productService")
+	@Bulkhead(name = "bulkheadProductService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "productService")
 	public ProductDto save(final ProductDto productDto) {
 		log.info("*** ProductDto, service; save product *");
 
@@ -94,6 +100,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	@CircuitBreaker(name = "productService")
+	@Bulkhead(name = "bulkheadProductService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "productService")
 	public ProductDto update(final ProductDto productDto) {
 		log.info("*** ProductDto, service; update product *");
 		return ProductMappingHelper.map(this.productRepository

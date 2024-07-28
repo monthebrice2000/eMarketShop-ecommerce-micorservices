@@ -16,6 +16,9 @@ import com.emarketshop.order_service.helper.OrderMappingHelper;
 import com.emarketshop.order_service.repository.OrderRepository;
 import com.emarketshop.order_service.service.OrderService;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +34,9 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 
 	@Override
+	@CircuitBreaker(name = "orderService")
+	@Bulkhead(name = "bulkheadOrderService", type = Bulkhead.Type.THREADPOOL)
+	@Retry(name = "retryOrderService")
 	public List<OrderDto> findAll() {
 		log.info("*** OrderDto List, service; fetch all orders *");
 		return this.orderRepository.findAll().stream().map(OrderMappingHelper::map).distinct()

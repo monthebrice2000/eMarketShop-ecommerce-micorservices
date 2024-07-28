@@ -1,5 +1,7 @@
-server:
-  port: 9296
+
+# server:
+#   servlet:
+#     context-path: /cloud-config
 
 spring:
   # zipkin:
@@ -8,26 +10,8 @@ spring:
     name: cloud-config
   profiles:
     active: native
-  cloud:
-    config:
-      server:
-        # git:
-        #   uri: https://github.com/monthebrice2000/professional-card-me
-        #   default-label: master
-        #   clone-on-start: true
-        # #Local configuration: This locations can either of classpath or locations in the filesystem.
-        # native:
-        #   #Reads from a specific filesystem folder
-        #   search-locations: file:///{FILE_PATH}
-        native:
-          search-locations: classpath:/config
-        # vault:
-        #   port: 8200
-        #   host: 127.0.0.1
-        #   kvVersion: 2
-
-encrypt:
-  key: secretkey
+  config:
+    location: ${SPRING_CONFIG_LOCATION:optional:classpath:/config/}
 
 resilience4j:
   circuitbreaker:
@@ -42,12 +26,36 @@ resilience4j:
         sliding-window-size: 10
         wait-duration-in-open-state: 5s
         sliding-window-type: COUNT_BASED
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+  bulkhead:
+    instances:
+      bulkheadCloudConfig:
+        maxWaitDuration: 10ms
+        maxConcurrentCalls: 20
+  thread-pool-bulkhead:
+    instances:
+      bulkheadCloudConfig:
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 1
+        keepAliveDuration: 20ms
+  retry:
+    instances:
+      retryCloudConfig:
+        maxRetryAttempts: 5
+        waitDuration: 10000
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    instances:
+      cloudConfig:
+        timeoutDuration: 1000ms
+        limitRefreshPeriod: 5000
+        limitForPeriod: 5
+
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
   health:
     circuitbreakers:
       enabled: true

@@ -3,10 +3,11 @@
 #     context-path: /
 
 spring:
-  # zipkin:
-  #   base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
+  zipkin:
+    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
+    location: ${SPRING_CONFIG_LOCATION:optional:classpath:/config}
   application:
     name: api-gateway
   profiles:
@@ -27,6 +28,34 @@ resilience4j:
         sliding-window-size: 10
         wait-duration-in-open-state: 5s
         sliding-window-type: COUNT_BASED
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+  bulkhead:
+    instances:
+      bulkheadApiGateway:
+        maxWaitDuration: 10ms
+        maxConcurrentCalls: 20
+  thread-pool-bulkhead:
+    instances:
+      bulkheadApiGateway:
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 1
+        keepAliveDuration: 20ms
+  retry:
+    instances:
+      retryApiGateway:
+        maxRetryAttempts: 5
+        waitDuration: 10000
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    instances:
+      apiGateway:
+        timeoutDuration: 1000ms
+        limitRefreshPeriod: 5000
+        limitForPeriod: 5
+
 
 management:
   health:

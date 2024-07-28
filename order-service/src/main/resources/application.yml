@@ -3,8 +3,15 @@
 #     context-path: /order-service
 
 springdoc:
+  api-docs:
+    enabled: true
+    path: '/order-service/v3/api-docs'
   swagger-ui:
-    path: /order-service/swagger-ui.html
+    path: '/order-service/swagger-ui'
+    config-url: '/order-service/v3/api-docs/swagger-config'
+    url: '/order-service/v3/api-docs'
+    doc-expansion: none
+    disable-swagger-default-url: true
 
 spring:
   # zipkin:
@@ -20,27 +27,56 @@ spring:
     active: dev
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
+    location: ${SPRING_CONFIG_LOCATION:optional:classpath:/config}
     # discovery:
     #   enabled: true
 
-# resilience4j:
-#   circuitbreaker:
-#     instances:
-#       favouriteService:
-#         register-health-indicator: true
-#         event-consumer-buffer-size: 10
-#         automatic-transition-from-open-to-half-open-enabled: true
-#         failure-rate-threshold: 50
-#         minimum-number-of-calls: 5
-#         permitted-number-of-calls-in-half-open-state: 3
-#         sliding-window-size: 10
-#         wait-duration-in-open-state: 5s
-#         sliding-window-type: COUNT_BASED
+resilience4j:
+  circuitbreaker:
+    instances:
+      orderService:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        automatic-transition-from-open-to-half-open-enabled: true
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        wait-duration-in-open-state: 5s
+        sliding-window-type: COUNT_BASED
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+  bulkhead:
+    instances:
+      bulkheadOrderService:
+        maxWaitDuration: 10ms
+        maxConcurrentCalls: 20
+  thread-pool-bulkhead:
+    instances:
+      bulkheadOrderService:
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 1
+        keepAliveDuration: 20ms
+  retry:
+    instances:
+      retryOrderService:
+        maxRetryAttempts: 5
+        waitDuration: 10000
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    instances:
+      orderService:
+        timeoutDuration: 1000ms
+        limitRefreshPeriod: 5000
+        limitForPeriod: 5
+
 
 management:
-  # health:
-  #   circuitbreakers:
-  #     enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
   endpoint:
     health:
       show-details: always

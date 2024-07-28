@@ -1,0 +1,47 @@
+server:
+  port: 9296
+
+spring:
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+        # vault:
+        #   port: 8200
+        #   host: 127.0.0.1
+        #   kvVersion: 2
+  encrypt:
+    key: ${ENCRYPT_KEY:secretkey}
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+    port: 8761
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      cloudConfig:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        automatic-transition-from-open-to-half-open-enabled: true
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        wait-duration-in-open-state: 5s
+        sliding-window-type: COUNT_BASED
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
