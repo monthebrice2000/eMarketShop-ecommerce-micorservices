@@ -30,3 +30,10 @@ replay_pid*
 .env.test.local
 .env.production.local
 .env.local
+
+
+EC2/
+EKS/
+emarketshop-ssh-key.pem
+*.pem
+*.old

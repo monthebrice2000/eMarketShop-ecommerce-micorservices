@@ -1,37 +1,52 @@
-node {
-   def mvnHome
-   stage('Preparation') { // for display purposes
-      // Get some code from a GitHub repository
-      git 'https://github.com/ihuaylupo/test.git'
-      // Get the Maven tool.
-      // ** NOTE: This 'M3' Maven tool must be configured
-      // **       in the global configuration.           
-      mvnHome = tool 'M2_HOME'
+pipeline {
+   agent "emarketshop-agent"
+
+   environment {
+      MVN_HOME = tool 'M2_HOME'
+      DOCKER_REGISTRY = '819XXXXXX43.dkr.ecr.us-east-2.amazonaws.com'
+      DOCKER_IMAGE_PREFIX = "${DOCKER_REGISTRY}/emarketshop"
+      DOCKER_IMAGE_VERSION = '0.0.1'
+      KUBECONFIG_ID = 'kubeconfig'
    }
-   stage('Build') {
-      // Run the maven build
-      withEnv(["MVN_HOME=$mvnHome"]) {
-         if (isUnix()) {
-            sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-         } else {
-            bat(/"%MVN_HOME%\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+
+   stages {
+      stage('Build pakages') {
+         steps {
+            // Run the maven build
+            sh 'mvn -Dmaven.test.failure.ignore clean package'
+         }
+      }
+      stage('Archive Tests Results and Artifacts') {
+         steps {
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts '**/target/*.jar'
+         }
+      }
+      stage('Build images') {
+         steps {
+            sh './scripts/build-image.sh'
+         }
+      }
+      stage('Push images to ECR') {
+         steps {
+            // script {
+            //    docker.withRegistry("https://${DOCKER_REGISTRY}", 'ecr:us-east-2:ecr-user') {
+            //             sh "docker push ${DOCKER_IMAGE_PREFIX}/configserver:${DOCKER_IMAGE_VERSION}"
+            //    }
+            // }
+
+            sh './push-image-to-registry.sh'
+         }
+      }
+      stage('Kubernetes deploy') {
+         steps {
+            sh 'kubectl view config'
          }
       }
    }
-   stage('Results') {
-      junit '**/target/surefire-reports/TEST-*.xml'
-      archiveArtifacts 'configserver/target/*.jar'
+   post {
+      always {
+            cleanWs()
+      }
    }
-    stage('Build image') {
-        sh "'${mvnHome}/bin/mvn' -Ddocker.image.prefix=819XXXXXX43.dkr.ecr.us-east-2.amazonaws.com/ostock -Dproject.artifactId=configserver -Ddocker.image.version=latest dockerfile:build"
-    }
-    stage('Push image') {
-        docker.withRegistry('https://819XXXXXX43.dkr.ecr.us-east-2.amazonaws.com', 'ecr:us-east-2:ecr-user') {
-            sh "docker push 819XXXXXX43.dkr.ecr.us-east-2.amazonaws.com/ostock/configserver:latest"
-        }
-    }
-   stage('Kubernetes deploy') {
-       kubernetesDeploy configs: 'configserver-deployment.yaml', kubeConfig: [path: ''], kubeconfigId: 'kubeconfig', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
-    }
-  
 }
