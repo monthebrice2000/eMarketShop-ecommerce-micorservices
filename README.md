@@ -3,6 +3,8 @@
 ## Introduction
 eMarketShop est une plateforme d'e-commerce innovante et scalable construite avec une architecture de microservices. Elle est conçue pour offrir une expérience utilisateur optimale tout en garantissant des performances élevées, une grande fiabilité et une sécurité renforcée.
 
+Je suis ravi de partager mon expérience dans la conception et l'implémentation de mon application d'e-commerce innovante, eMarketShop, basée sur des microservices avec Spring. Cette aventure m'a permis de développer des compétences précieuses dans la création d'APIs REST, l'utilisation de conteneurs Docker que j'aimerais mettre à profit dans un nouveau défi professionnel.
+
 ## Fonctionnalités
 - **Gestion des produits** : Microservice pour la création, la modification et la suppression des produits.
 - **Gestion des catégories de produits** : Microservice pour organiser les produits par catégories.
