@@ -32,6 +32,7 @@
 		<docker.image.prefix>ostock</docker.image.prefix>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
 		<testcontainers.version>1.16.0</testcontainers.version>
+		<!-- <checkstyle.config.location>src/main/resources/checkstyle.xml</checkstyle.config.location> -->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -167,6 +168,42 @@
 						<goals>
 							<goal>build</goal>
 							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            <!-- Checkstyle plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<!-- <configLocation>checkstyle.xml</configLocation> -->
+					<encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>false</failsOnError>
+                    <linkXRef>false</linkXRef>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- PMD plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.14.0</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
