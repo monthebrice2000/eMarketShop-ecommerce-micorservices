@@ -8,9 +8,15 @@ pipeline{
                 echo 'Successfully checkout'
             }
         }
-        stage('Code Analysis'){
+        stage('Sonarqube Analysis'){
             steps{
-                sh 'ls -al'
+                script{
+                    def mvn = tool 'Default Maven';
+                    withSonarQubeEnv() {
+                        sh "sonar-scanner -Dsonar.host.url=http://20.55.59.215/:9000 -Dsonar.login=admin -Dsonar.password=admin"
+                    }
+                }
+                    
                 echo 'Successfully Analyse code'
             }
         }
