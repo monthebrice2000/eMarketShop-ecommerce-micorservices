@@ -11,8 +11,9 @@ pipeline{
         stage('Sonarqube Analysis'){
             steps{
                 script{
+                    def scannerHome= tool 'sonar-scanner'
                     withSonarQubeEnv() {
-                        sh "sonar-scanner -Dsonar.host.url=http://20.55.59.215/:9000 -Dsonar.login=admin -Dsonar.password=admin"
+                        sh "${sonar-scanner}/bin/sonar-scanner -Dsonar.host.url=http://20.55.59.215:9000 -Dsonar.login=admin -Dsonar.password=admin"
                     }
                 }
                     
