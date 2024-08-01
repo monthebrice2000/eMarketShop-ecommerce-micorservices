@@ -8,5 +8,11 @@ pipeline{
                 echo 'Successfully checkout'
             }
         }
+        stage('Code Analysis'){
+            steps{
+                sh 'ls -al'
+                echo 'Successfully Analyse code'
+            }
+        }
     }
 }
