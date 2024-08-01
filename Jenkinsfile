@@ -11,7 +11,6 @@ pipeline{
         stage('Sonarqube Analysis'){
             steps{
                 script{
-                    def mvn = tool 'Default Maven';
                     withSonarQubeEnv() {
                         sh "sonar-scanner -Dsonar.host.url=http://20.55.59.215/:9000 -Dsonar.login=admin -Dsonar.password=admin"
                     }
