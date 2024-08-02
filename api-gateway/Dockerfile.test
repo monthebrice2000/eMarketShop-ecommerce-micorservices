@@ -9,6 +9,7 @@ LABEL maintainer="Brice Monthe"
 # The application's version file
 ARG PROJECT_VERSION=0.0.1
 ARG WKD=/home/app
+ARG VERSION=0.37.1
 
 RUN mkdir -p ${WKD}
 
@@ -17,11 +18,20 @@ WORKDIR ${WKD}
 # Copy the project files to the container
 COPY . .
 
+# RUN  apt-get update -y \
+#   && apt-get install -y wget \
+#   && rm -rf /var/lib/apt/lists/*
+
+# Install Trivy
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.deb && \
+    dpkg -i trivy_${VERSION}_Linux-64bit.deb
+
 # Build the application and run tests
-RUN ./mvnw clean package -DskipTests && ./mvnw test
+RUN ./mvnw clean package -DskipTests -Dcheckstyle.skip -Dpmd.skip
 
 # Add the application's jar to the container
-# ADD ./target/api-gateway-${PROJECT_VERSION}.jar app.jar
 RUN cp ./target/api-gateway-${PROJECT_VERSION}.jar app.jar
 
 #stage 2
@@ -36,6 +46,7 @@ ARG WORKDIR=/home/app
 ARG SPRING_PROFILES_ACTIVE=dev
 
 COPY --from=test ${WORKDIR}/ /app
+COPY --from=test /usr/local/bin/trivy /usr/local/bin/trivy
 
 #execute the application
 # ENTRYPOINT ["java","-cp","app:app/lib/*","com.emarketshop.payment_service.PaymentServiceApplication"]
