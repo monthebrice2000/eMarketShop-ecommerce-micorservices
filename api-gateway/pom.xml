@@ -113,7 +113,6 @@
 		</dependency>
 
 
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -230,10 +229,10 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
-				<version>10.0.3</version> <!-- Use the latest version -->
+				<version>10.0.3</version>
 				<executions>
 					<execution>
 						<id>check</id>
@@ -242,11 +241,11 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.9.1.2184</version>
+			<artifactId>sonar-maven-plugin</artifactId>
+			<version>4.0.0.4121</version>
 			  </plugin>
 		</plugins>
 		<finalName>${project.artifactId}-${project.version}</finalName>

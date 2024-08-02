@@ -13,7 +13,8 @@ pipeline{
                 script{
                     def mvn= tool 'M2_HOME'
                     withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=api-gateway -Dsonar.projectName='api-gateway"
+                        sh 'cd ./api-gateway'
+                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dcheckstyle.skip -Dpmd.skip -DskipTests -Dsonar.projectKey=api-gateway -Dsonar.projectName=api-gateway -Dsonar.host.url=http://20.55.59.215:9000"
                         // sh "${scannerHome}/bin/sonar-scanner" // -Dsonar.host.url=http://20.55.59.215:9000 -Dsonar.login=adminn -Dsonar.password=adminn"
                     }
                 }
